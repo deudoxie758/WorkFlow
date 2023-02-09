@@ -29,10 +29,9 @@ export const authOptions = {
           body: JSON.stringify(payload),
           headers: { "Content-Type": "application/json" },
         });
-        const user = await res.json();
 
+        const user = await res.json();
         if (res.ok && user) {
-          console.log("Hey there");
           return user;
         }
         return null;

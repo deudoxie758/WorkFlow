@@ -2,10 +2,23 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
+import SignOut from "@/components/SignOut";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (status !== "loading") {
+      if (!session) {
+        router.push("/login");
+      }
+    }
+  });
   return (
     <>
       <Head>
@@ -16,6 +29,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1>Home</h1>
+        <SignOut />
       </main>
     </>
   );

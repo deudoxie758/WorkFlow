@@ -32,9 +32,9 @@ export default async function handler(req, res) {
       try {
         const { username, firstname, lastname, email, password } = req.body;
         const newPassword = await hashPassword(password);
-        console.log(newPassword);
         const created_at = new Date();
         const updated_at = new Date();
+        console.log(req.body);
         const newUser = await prisma.user.create({
           data: {
             username,

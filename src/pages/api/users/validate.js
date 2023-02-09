@@ -25,6 +25,8 @@ export default async function handler(req, res) {
       } else {
         res.status(401).json({ message: "not authorized" });
       }
+    } else {
+      res.status(404);
     }
   } else {
     res.status(400).json({ message: "method not supported" });

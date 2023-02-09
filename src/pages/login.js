@@ -12,6 +12,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 function Copyright(props) {
   return (
@@ -34,12 +36,21 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+
+    const email = data.get("email");
+    const password = data.get("password");
+
+    const res = await signIn("credentials", {
+      email,
+      password,
+      callbackUrl: "/signup",
+      redirect: false,
     });
   };
 

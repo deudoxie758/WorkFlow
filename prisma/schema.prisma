@@ -20,6 +20,7 @@ model User {
   created_at DateTime
   updated_at DateTime
   messages   Message[]
+  channels   Channel[]
 }
 
 model Message {
@@ -38,4 +39,5 @@ model Channel {
   description String
   type        String
   messages    Message[]
+  users       User[]
 }

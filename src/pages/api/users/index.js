@@ -34,7 +34,6 @@ export default async function handler(req, res) {
         const newPassword = await hashPassword(password);
         const created_at = new Date();
         const updated_at = new Date();
-        console.log(req.body);
         const newUser = await prisma.user.create({
           data: {
             username,

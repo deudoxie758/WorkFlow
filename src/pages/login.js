@@ -49,8 +49,8 @@ export default function SignIn() {
     const res = await signIn("credentials", {
       email,
       password,
-      callbackUrl: "/signup",
-      redirect: false,
+      callbackUrl: "/",
+      // redirect: false,
     });
   };
 

@@ -6,19 +6,12 @@ import SignOut from "@/components/SignOut";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import checkStatus from "@/utils/checkStatus";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  useEffect(() => {
-    if (status !== "loading") {
-      if (!session) {
-        router.push("/login");
-      }
-    }
-  });
+  checkStatus();
   return (
     <>
       <Head>

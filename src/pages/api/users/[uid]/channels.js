@@ -13,14 +13,18 @@ export default async function handler(req, res) {
           },
         });
         const filtered_channels = [];
+        const ids = new Set();
         for (let channel of channels) {
           for (let message of channel.messages) {
             if (message.user_id === id) {
-              filtered_channels.push(channel);
+              if (!ids.has(channel.id)) {
+                filtered_channels.push(channel);
+                ids.add(channel.id);
+              }
             }
           }
         }
-
+        console.log(filtered_channels);
         res.status(200).json(filtered_channels);
       } catch (error) {
         res.status(400).json({ error: error });

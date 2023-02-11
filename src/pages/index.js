@@ -5,14 +5,32 @@ import styles from "@/styles/Home.module.css";
 import SignOut from "@/components/SignOut";
 import SideBar from "@/components/SideBar";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import checkStatus from "@/utils/checkStatus";
+import axios from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const [channels, setChannels] = useState([]);
+  const { data: session, status } = useSession();
   checkStatus();
+  useEffect(() => {
+    async function getChannels() {
+      try {
+        if (session) {
+          const id = session.user.id;
+          const channelData = await axios.get(`/api/users/${id}/channels`);
+          setChannels(channelData.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getChannels();
+  }, [session]);
+
   return (
     <>
       <Head>
@@ -23,7 +41,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1>Home</h1>
-        <SideBar />
+        <SideBar channels={channels} />
         <SignOut />
       </main>
     </>

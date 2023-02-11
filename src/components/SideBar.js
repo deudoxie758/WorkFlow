@@ -1,7 +1,17 @@
 import React from "react";
 
-function SideBar() {
-  return <div>SideBar</div>;
+function SideBar({ channels }) {
+  if (channels) {
+    return (
+      <ul>
+        {channels.map((channel) => (
+          <li key={channel.id} id={channel.id}>
+            <button> {channel.name} </button>
+          </li>
+        ))}
+      </ul>
+    );
+  }
 }
 
 export default SideBar;

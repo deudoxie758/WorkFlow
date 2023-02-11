@@ -11,6 +11,7 @@ export default async function handler(req, res) {
           where: { id },
           include: {
             messages: true,
+            users: true,
           },
         });
         res.status(200).json(channel);

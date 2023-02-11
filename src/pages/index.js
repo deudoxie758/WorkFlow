@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import SignOut from "@/components/SignOut";
+import SideBar from "@/components/SideBar";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -22,6 +23,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1>Home</h1>
+        <SideBar />
         <SignOut />
       </main>
     </>

@@ -11,16 +11,19 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  username   String
-  firstname  String
-  lastname   String
-  email      String    @unique
-  password   String
-  created_at DateTime
-  updated_at DateTime
-  messages   Message[]
-  channels   Channel[]
+  id           Int            @id @default(autoincrement())
+  username     String
+  firstname    String
+  lastname     String
+  email        String         @unique
+  password     String
+  created_at   DateTime
+  updated_at   DateTime
+  messages     Message[]
+  // channels     Channel[]
+  userChannels UserChannels[]
+  // Channel      Channel?       @relation(fields: [channelId], references: [id])
+  // channelId    Int?
 }
 
 model Message {
@@ -34,10 +37,20 @@ model Message {
 }
 
 model Channel {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String
-  type        String
-  messages    Message[]
-  users       User[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  description  String
+  type         String
+  messages     Message[]
+  // users        User[]
+  userChannels UserChannels[]
+}
+
+model UserChannels {
+  user       User    @relation(fields: [user_id], references: [id])
+  user_id    Int
+  channel    Channel @relation(fields: [channel_id], references: [id])
+  channel_id Int
+
+  @@id([user_id, channel_id])
 }

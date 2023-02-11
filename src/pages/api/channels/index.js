@@ -13,6 +13,9 @@ export default async function handler(req, res) {
             description,
             type,
           },
+          include: {
+            users: true,
+          },
         });
         const channel_id = newChannel.id;
         await prisma.message.create({

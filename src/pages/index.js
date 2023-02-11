@@ -9,11 +9,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import checkStatus from "@/utils/checkStatus";
 import axios from "axios";
+import Chat from "@/components/Chat";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const [channels, setChannels] = useState([]);
+  const [channel, setChannel] = useState([]);
   const { data: session, status } = useSession();
   checkStatus();
   useEffect(() => {
@@ -30,6 +32,9 @@ export default function Home() {
     }
     getChannels();
   }, [session]);
+  function updateChat(chat) {
+    setChannel(chat);
+  }
 
   return (
     <>
@@ -41,7 +46,8 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1>Home</h1>
-        <SideBar channels={channels} />
+        <SideBar channels={channels} updateChat={updateChat} />
+        <Chat channel={channel} />
         <SignOut />
       </main>
     </>

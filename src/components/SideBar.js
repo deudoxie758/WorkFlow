@@ -1,12 +1,15 @@
 import React from "react";
 
-function SideBar({ channels }) {
+function SideBar({ channels, updateChat }) {
   if (channels) {
     return (
       <ul>
         {channels.map((channel) => (
           <li key={channel.id} id={channel.id}>
-            <button> {channel.name} </button>
+            <button onClick={() => updateChat(channel)}>
+              {" "}
+              {channel.name}{" "}
+            </button>
           </li>
         ))}
       </ul>

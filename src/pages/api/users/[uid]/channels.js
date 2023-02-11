@@ -24,7 +24,6 @@ export default async function handler(req, res) {
             }
           }
         }
-        console.log(filtered_channels);
         res.status(200).json(filtered_channels);
       } catch (error) {
         res.status(400).json({ error: error });

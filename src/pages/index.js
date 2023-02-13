@@ -10,13 +10,16 @@ import { useRouter } from "next/router";
 import checkStatus from "@/utils/checkStatus";
 import axios from "axios";
 import Chat from "@/components/Chat";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
-  const [channels, setChannels] = useState([]);
-  const [channel, setChannel] = useState([]);
+export default function Home({ channelData }) {
+  const [channels, setChannels] = useState(channelData);
+  const [channel, setChannel] = useState(channelData[0]);
   const { data: session, status } = useSession();
+  const [messages, setMessages] = useState(channelData.messages);
   checkStatus();
   useEffect(() => {
     async function getChannels() {
@@ -35,6 +38,24 @@ export default function Home() {
   function updateChat(chat) {
     setChannel(chat);
   }
+  async function onClick(e) {
+    try {
+      //  if (session) {
+      //    const user_id = session.user.id;
+      //    e.preventDefault();
+      //    const getText = e.target.body.value;
+      //    const getData = {
+      //      body: getText,
+      //      channel_id: channelId,
+      //      user_id,
+      //    };
+      //    // const data = await axios.post("/api/messages", getData);
+      //    socket.emit("new-message", getData);
+      //  }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -47,9 +68,48 @@ export default function Home() {
       <main className={styles.main}>
         <h1>Home</h1>
         <SideBar channels={channels} updateChat={updateChat} />
-        <Chat channel={channel} />
+        {/* <Chat /> */}
+        <div>
+          {channel ? (
+            <div>
+              {/* <div>{input}</div> */}
+              <div>{channel.name}</div>
+              <div>{channel.description}</div>
+              <div>
+                {channel.messages.map((message) => (
+                  <li key={message.id}>{message.body}</li>
+                ))}
+              </div>
+              <form onSubmit={onClick}>
+                <textarea name="body" id="body" />
+                <button type="submit">Send</button>
+              </form>
+            </div>
+          ) : (
+            <div> {channel.name}</div>
+          )}
+        </div>
         <SignOut />
       </main>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  const id = session.user ? session.user.id : null;
+  console.log(id);
+  let channelData = [];
+  if (session) {
+    // const data = await axios.get(`/api/users/${id}/channels`);
+    const response = await fetch(
+      `http://localhost:3000/api/users/${id}/channels`
+    );
+    channelData = await response.json();
+  }
+  return {
+    props: {
+      channelData,
+    },
+  };
 }

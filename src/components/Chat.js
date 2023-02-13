@@ -2,35 +2,23 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 let socket;
 
-function Chat({ channel }) {
+function Chat({ channelData }) {
   const [messages, setMessages] = useState([]);
   const [channelId, setChannelId] = useState(null);
   const { data: session, status } = useSession();
   const [checkSocket, setCheckSocket] = useState(false);
-
+  const [input, setInput] = useState("");
+  console.log(channelData);
   useEffect(() => {
-    // if (!checkSocket) setMessages(channel.messages);
-    setChannelId(channel.id);
-    socketInitializer();
-  }, [channel, messages]);
-  const socketInitializer = async () => {
-    await axios.get("/api/socket");
-    socket = io();
+    // setChannelId(channel.id);
+    // setMessages(channel.messages);
+  });
 
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-    socket.on("post-message", (newMessage) => {
-      // setCheckSocket(true);
-      setMessages(newMessage);
-    });
-
-    setMessages(channel.messages);
-  };
-  // socketInitializer();
   async function onClick(e) {
     try {
       if (session) {
@@ -51,9 +39,9 @@ function Chat({ channel }) {
   }
   return (
     <div>
-      {Array.isArray(messages) ? (
+      {/* {Array.isArray(messages) ? (
         <div>
-          {/* <div>{input}</div> */}
+          <div>{input}</div>
           <div>{channel.name}</div>
           <div>{channel.description}</div>
           <div>
@@ -68,9 +56,24 @@ function Chat({ channel }) {
         </div>
       ) : (
         <div></div>
-      )}
+      )} */}
     </div>
   );
 }
 
 export default Chat;
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  const id = session.user ? session.user.id : null;
+  console.log(context);
+  if (id) {
+    const data = await axios.get(`/api/users/${id}/channels`);
+    const channelData = data.data;
+  }
+  return {
+    props: {
+      channelData,
+    },
+  };
+}

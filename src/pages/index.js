@@ -1,41 +1,68 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import SignOut from "@/components/SignOut";
 import SideBar from "@/components/SideBar";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import checkStatus from "@/utils/checkStatus";
-import axios from "axios";
-import Chat from "@/components/Chat";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
-const inter = Inter({ subsets: ["latin"] });
+import io from "socket.io-client";
+let socket;
 
-export default function Home() {
-  const [channels, setChannels] = useState([]);
-  const [channel, setChannel] = useState([]);
+export default function Home({ channelData }) {
+  const [channels, setChannels] = useState(channelData);
+  const [channel, setChannel] = useState(channelData[0]);
   const { data: session, status } = useSession();
-  checkStatus();
-  useEffect(() => {
-    async function getChannels() {
-      try {
-        if (session) {
-          const id = session.user.id;
-          const channelData = await axios.get(`/api/users/${id}/channels`);
-          setChannels(channelData.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getChannels();
-  }, [session]);
-  function updateChat(chat) {
-    setChannel(chat);
-  }
+  const [messages, setMessages] = useState(channelData[0]?.messages || []);
 
+  checkStatus();
+
+  useEffect(() => {
+    const socketInitializer = async () => {
+      await fetch("/api/socket");
+      socket = io();
+
+      socket.on("connect", () => {
+        console.log("connected");
+      });
+
+      socket.on("post-message", (msg) => {
+        console.log(msg);
+      });
+
+      socket.on("new-messages", (data) => {
+        setMessages(data);
+      });
+    };
+    socketInitializer();
+  }, [session, messages]);
+
+  function updateChat(chat) {
+    if (chat.messages) {
+      setChannel(chat);
+      setMessages(chat.messages);
+    }
+  }
+  async function onClick(e) {
+    try {
+      if (session) {
+        const user_id = session.user.id;
+        e.preventDefault();
+        const getText = e.target.body.value;
+        const getData = {
+          body: getText,
+          channel_id: channel.id,
+          user_id,
+        };
+        socket.emit("new-message", getData);
+        e.target.body.value = "";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <>
       <Head>
@@ -47,9 +74,45 @@ export default function Home() {
       <main className={styles.main}>
         <h1>Home</h1>
         <SideBar channels={channels} updateChat={updateChat} />
-        <Chat channel={channel} />
+        <div>
+          {channel ? (
+            <div>
+              <div>{channel.name}</div>
+              <div>{channel.description}</div>
+              <div>
+                {messages.map((message) => (
+                  <li key={message.id}>{message.body}</li>
+                ))}
+              </div>
+              <form onSubmit={onClick}>
+                <textarea name="body" id="body" />
+                <button type="submit">Send</button>
+              </form>
+            </div>
+          ) : (
+            <div> {channel.name}</div>
+          )}
+        </div>
         <SignOut />
       </main>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  const id = session.user ? session.user.id : null;
+  console.log(id);
+  let channelData = [];
+  if (session) {
+    const response = await fetch(
+      `http://localhost:3000/api/users/${id}/channels`
+    );
+    channelData = await response.json();
+  }
+  return {
+    props: {
+      channelData,
+    },
+  };
 }

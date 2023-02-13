@@ -12,7 +12,6 @@ const SocketHandler = (req, res) => {
 
     io.on("connection", (socket) => {
       socket.on("new-message", async (msg) => {
-        // async function postNewMessage() {
         const data = msg;
         data.created_at = new Date();
         const message = await prisma.message.create({
@@ -23,10 +22,6 @@ const SocketHandler = (req, res) => {
           include: { messages: true },
         });
         const getMessages = getChannel.messages;
-        console.log(getMessages);
-
-        // // socket.broadcast.emit("post-message", getMessages);
-        // console.log(getChannel);
         socket.broadcast.emit("new-messages", getMessages);
       });
     });

@@ -1,28 +1,21 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import SignOut from "@/components/SignOut";
 import SideBar from "@/components/SideBar";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import checkStatus from "@/utils/checkStatus";
-import axios from "axios";
-import Chat from "@/components/Chat";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 import io from "socket.io-client";
 let socket;
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Home({ channelData }) {
   const [channels, setChannels] = useState(channelData);
   const [channel, setChannel] = useState(channelData[0]);
   const { data: session, status } = useSession();
   const [messages, setMessages] = useState(channelData[0]?.messages || []);
-  const [newMessage, setNewMessage] = useState({});
 
   checkStatus();
 
@@ -36,16 +29,13 @@ export default function Home({ channelData }) {
       });
 
       socket.on("post-message", (msg) => {
-        // setMessages([...messages, newMessage]);
         console.log(msg);
       });
 
       socket.on("new-messages", (data) => {
         setMessages(data);
-        // console.log(data);
       });
     };
-
     socketInitializer();
   }, [session, messages]);
 
@@ -66,7 +56,6 @@ export default function Home({ channelData }) {
           channel_id: channel.id,
           user_id,
         };
-
         socket.emit("new-message", getData);
         e.target.body.value = "";
       }
@@ -74,7 +63,6 @@ export default function Home({ channelData }) {
       console.log(error);
     }
   }
-
   return (
     <>
       <Head>
@@ -86,11 +74,9 @@ export default function Home({ channelData }) {
       <main className={styles.main}>
         <h1>Home</h1>
         <SideBar channels={channels} updateChat={updateChat} />
-        {/* <Chat /> */}
         <div>
           {channel ? (
             <div>
-              {/* <div>{input}</div> */}
               <div>{channel.name}</div>
               <div>{channel.description}</div>
               <div>

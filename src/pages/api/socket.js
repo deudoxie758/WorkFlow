@@ -15,15 +15,19 @@ const SocketHandler = (req, res) => {
         // async function postNewMessage() {
         const data = msg;
         data.created_at = new Date();
-        console.log(data);
         const message = await prisma.message.create({
           data,
         });
         const getChannel = await prisma.channel.findUnique({
-          where: { id: message.channel_id },
+          where: { id: data.channel_id },
+          include: { messages: true },
         });
         const getMessages = getChannel.messages;
-        socket.broadcast.emit("post-message", getMessages);
+        console.log(getMessages);
+
+        // // socket.broadcast.emit("post-message", getMessages);
+        // console.log(getChannel);
+        socket.broadcast.emit("new-messages", getMessages);
       });
     });
   }

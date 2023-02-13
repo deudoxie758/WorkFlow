@@ -13,45 +13,69 @@ import Chat from "@/components/Chat";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 
+import io from "socket.io-client";
+let socket;
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home({ channelData }) {
   const [channels, setChannels] = useState(channelData);
   const [channel, setChannel] = useState(channelData[0]);
   const { data: session, status } = useSession();
-  const [messages, setMessages] = useState(channelData.messages);
+  const [messages, setMessages] = useState(channelData[0]?.messages || []);
+  const [newMessage, setNewMessage] = useState({});
+
   checkStatus();
+
   useEffect(() => {
-    async function getChannels() {
-      try {
-        if (session) {
-          const id = session.user.id;
-          const channelData = await axios.get(`/api/users/${id}/channels`);
-          setChannels(channelData.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getChannels();
-  }, [session]);
+    const socketInitializer = async () => {
+      await fetch("/api/socket");
+      socket = io();
+
+      socket.on("connect", () => {
+        console.log("connected");
+      });
+
+      socket.on("post-message", (msg) => {
+        // setMessages([...messages, newMessage]);
+        console.log(msg);
+      });
+
+      socket.on("new-messages", (data) => {
+        setMessages(data);
+        // console.log(data);
+      });
+    };
+
+    socketInitializer();
+  }, [session, messages]);
+
   function updateChat(chat) {
-    setChannel(chat);
+    if (chat.messages) {
+      setChannel(chat);
+      setMessages(chat.messages);
+    }
   }
   async function onClick(e) {
     try {
-      //  if (session) {
-      //    const user_id = session.user.id;
-      //    e.preventDefault();
-      //    const getText = e.target.body.value;
-      //    const getData = {
-      //      body: getText,
-      //      channel_id: channelId,
-      //      user_id,
-      //    };
-      //    // const data = await axios.post("/api/messages", getData);
-      //    socket.emit("new-message", getData);
-      //  }
+      if (session) {
+        const user_id = session.user.id;
+        e.preventDefault();
+        const getText = e.target.body.value;
+        const getData = {
+          body: getText,
+          channel_id: channel.id,
+          user_id,
+        };
+
+        socket.emit("new-message", getData);
+        const newMsg = {
+          body: getText,
+          channel_id: channel.id,
+          user_id,
+          created_at: new Date(),
+        };
+        setNewMessage(newMsg);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -76,7 +100,7 @@ export default function Home({ channelData }) {
               <div>{channel.name}</div>
               <div>{channel.description}</div>
               <div>
-                {channel.messages.map((message) => (
+                {messages.map((message) => (
                   <li key={message.id}>{message.body}</li>
                 ))}
               </div>
@@ -101,7 +125,6 @@ export async function getServerSideProps(context) {
   console.log(id);
   let channelData = [];
   if (session) {
-    // const data = await axios.get(`/api/users/${id}/channels`);
     const response = await fetch(
       `http://localhost:3000/api/users/${id}/channels`
     );

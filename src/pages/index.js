@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 import checkStatus from "@/utils/checkStatus";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
-
 import io from "socket.io-client";
+import SideBar2 from "@/components/SideBar2";
+
 let socket;
 
 export default function Home({ channelData }) {
@@ -63,6 +64,13 @@ export default function Home({ channelData }) {
       console.log(error);
     }
   }
+  if (!channel) {
+    return (
+      <div>
+        <button>Create First Channel</button>
+      </div>
+    );
+  }
   return (
     <>
       <Head>
@@ -73,25 +81,30 @@ export default function Home({ channelData }) {
       </Head>
       <main className={styles.main}>
         <h1>Home</h1>
-        <SideBar channels={channels} updateChat={updateChat} />
+        {/* <SideBar channels={channels} updateChat={updateChat} /> */}
         <div>
-          {channel ? (
-            <div>
-              <div>{channel.name}</div>
-              <div>{channel.description}</div>
+          <div>
+            <SideBar2 />
+          </div>
+          <div>
+            {channel ? (
               <div>
-                {messages.map((message) => (
-                  <li key={message.id}>{message.body}</li>
-                ))}
+                <div>{channel.name}</div>
+                <div>{channel.description}</div>
+                <div>
+                  {messages.map((message) => (
+                    <li key={message.id}>{message.body}</li>
+                  ))}
+                </div>
+                <form onSubmit={onClick}>
+                  <textarea name="body" id="body" />
+                  <button type="submit">Send</button>
+                </form>
               </div>
-              <form onSubmit={onClick}>
-                <textarea name="body" id="body" />
-                <button type="submit">Send</button>
-              </form>
-            </div>
-          ) : (
-            <div> {channel.name}</div>
-          )}
+            ) : (
+              <div> {channel.name}</div>
+            )}
+          </div>
         </div>
         <SignOut />
       </main>

@@ -14,7 +14,7 @@ export default async function handler(req, res) {
             type,
           },
           include: {
-            users: true,
+            userChannels: true,
           },
         });
         const channel_id = newChannel.id;

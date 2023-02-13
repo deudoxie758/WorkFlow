@@ -68,13 +68,7 @@ export default function Home({ channelData }) {
         };
 
         socket.emit("new-message", getData);
-        const newMsg = {
-          body: getText,
-          channel_id: channel.id,
-          user_id,
-          created_at: new Date(),
-        };
-        setNewMessage(newMsg);
+        e.target.body.value = "";
       }
     } catch (error) {
       console.log(error);

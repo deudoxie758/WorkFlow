@@ -3,15 +3,39 @@ import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import SignOut from "@/components/SignOut";
+import SideBar from "@/components/SideBar";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import checkStatus from "@/utils/checkStatus";
+import axios from "axios";
+import Chat from "@/components/Chat";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const [channels, setChannels] = useState([]);
+  const [channel, setChannel] = useState([]);
+  const { data: session, status } = useSession();
   checkStatus();
+  useEffect(() => {
+    async function getChannels() {
+      try {
+        if (session) {
+          const id = session.user.id;
+          const channelData = await axios.get(`/api/users/${id}/channels`);
+          setChannels(channelData.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getChannels();
+  }, [session]);
+  function updateChat(chat) {
+    setChannel(chat);
+  }
+
   return (
     <>
       <Head>
@@ -22,6 +46,8 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1>Home</h1>
+        <SideBar channels={channels} updateChat={updateChat} />
+        <Chat channel={channel} />
         <SignOut />
       </main>
     </>

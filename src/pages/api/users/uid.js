@@ -17,12 +17,14 @@ export default async function handler(req, res) {
             email: true,
             created_at: true,
             updated_at: true,
+            channels: true,
           },
         });
         res.status(200).json(getUser);
       } catch (e) {
         res.status(400).json({ error: e });
       }
+      break;
     case "PUT":
       try {
         const data = req.body;
@@ -38,6 +40,7 @@ export default async function handler(req, res) {
             email: true,
             created_at: true,
             updated_at: true,
+            channels: true,
           },
         });
         res.status(200).json(editUser);

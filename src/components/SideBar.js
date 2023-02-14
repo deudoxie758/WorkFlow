@@ -4,6 +4,7 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import AddIcon from "@mui/icons-material/Add";
 import Collapse from "@mui/material/Collapse";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import DraftsIcon from "@mui/icons-material/Drafts";
@@ -12,9 +13,12 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 
+import NewModal from "./Modal";
+
 function SideBar({ channels, updateChat }) {
   const [open, setOpen] = useState(true);
   const [open1, setOpen1] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
 
   const handleClick = () => {
     setOpen(!open);
@@ -22,6 +26,15 @@ function SideBar({ channels, updateChat }) {
   const handleClick1 = () => {
     setOpen1(!open1);
   };
+
+  const handleModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleClose = () => {
+    setOpenModal(false);
+  };
+
   if (channels) {
     return (
       <List
@@ -34,6 +47,17 @@ function SideBar({ channels, updateChat }) {
           </ListSubheader>
         }
       >
+        <NewModal
+          handleModal={handleModal}
+          openModal={openModal}
+          handleClose={handleClose}
+        />
+        <ListItemButton onClick={handleModal}>
+          <ListItemIcon>
+            <AddIcon />
+          </ListItemIcon>
+          <ListItemText primary="New Channel" />
+        </ListItemButton>
         <ListItemButton onClick={handleClick}>
           <ListItemIcon>
             <SendIcon />
@@ -57,13 +81,6 @@ function SideBar({ channels, updateChat }) {
             ))}
           </List>
         </Collapse>
-
-        <ListItemButton>
-          <ListItemIcon>
-            <DraftsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Drafts" />
-        </ListItemButton>
         <ListItemButton onClick={handleClick1}>
           <ListItemIcon>
             <InboxIcon />

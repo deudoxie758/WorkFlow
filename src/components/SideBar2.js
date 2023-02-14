@@ -45,7 +45,7 @@ export default function NestedList(channels, updateChat) {
         <ListItemText primary="Channels" />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      {/* <Collapse in={open} timeout="auto" unmountOnExit>
+      <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 4 }}>
             <ListItemIcon>
@@ -54,23 +54,23 @@ export default function NestedList(channels, updateChat) {
             <ListItemText primary="Movies" />
           </ListItemButton>
         </List>
-      </Collapse> */}
-      <Collapse in={open} timeout="auto" unmountOnExit>
+      </Collapse>
+      {/* <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {Array.isArray(currentChannels) ? (
             currentChannels.map((channel) => (
-              <ListItemButton key={channel.id} sx={{ pl: 4 }}>
-                <ListItemIcon>
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText primary={channel.name} />
-              </ListItemButton>
+                <ListItemButton key={channel.id} sx={{ pl: 4 }}>
+                  <ListItemIcon>
+                    <StarBorder />
+                  </ListItemIcon>
+                  <ListItemText primary={channel.name} />
+                </ListItemButton>
             ))
           ) : (
             <div></div>
           )}
         </List>
-      </Collapse>
+      </Collapse> */}
       <ListItemButton>
         <ListItemIcon>
           <DraftsIcon />

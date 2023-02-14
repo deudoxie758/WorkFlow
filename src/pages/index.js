@@ -9,6 +9,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import io from "socket.io-client";
 import SideBar2 from "@/components/SideBar2";
+import NavBar from "@/components/NavBar";
 
 let socket;
 
@@ -27,10 +28,6 @@ export default function Home({ channelData }) {
 
       socket.on("connect", () => {
         console.log("connected");
-      });
-
-      socket.on("post-message", (msg) => {
-        console.log(msg);
       });
 
       socket.on("new-messages", (data) => {
@@ -80,11 +77,12 @@ export default function Home({ channelData }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h1>Home</h1>
-        {/* <SideBar channels={channels} updateChat={updateChat} /> */}
-        <div>
+        <NavBar />
+
+        <div className={`flex`}>
           <div>
-            <SideBar2 />
+            {/* <SideBar2 channels={channels} updateChat={updateChat} /> */}
+            <SideBar channels={channels} updateChat={updateChat} />
           </div>
           <div>
             {channel ? (
@@ -115,7 +113,6 @@ export default function Home({ channelData }) {
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
   const id = session.user ? session.user.id : null;
-  console.log(id);
   let channelData = [];
   if (session) {
     const response = await fetch(

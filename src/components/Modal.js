@@ -31,7 +31,10 @@ export default function NewModal({ openModal, handleClose }) {
     overflow: "scroll",
   };
   const createNewChannel = () => {};
-
+  const cancelModal = () => {
+    setMembers([]);
+    handleClose();
+  };
   const setValue = (obj) => {
     const getIds = members.map((member) => member.id);
     console.log("setval");
@@ -104,9 +107,11 @@ export default function NewModal({ openModal, handleClose }) {
             />
           </FormControl>
           <div className="mt-20 flex justify-between">
-            <Button variant="outlined">Cancel</Button>
+            <Button onClick={cancelModal} variant="outlined">
+              Cancel
+            </Button>
             <Button className=" bg-sky-700" variant="contained">
-              Creat Channel
+              Create Channel
             </Button>
           </div>
         </form>

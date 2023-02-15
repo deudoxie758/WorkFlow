@@ -107,6 +107,7 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              className="text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
               Sign In
             </Button>

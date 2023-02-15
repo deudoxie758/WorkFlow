@@ -66,7 +66,7 @@ const ProfilePage = ({ user }) => {
           {username || email}
         </h1>
         <p className="text-gray-500">{email}</p>
-        <form className="mt-6">
+        <form onSubmit={handleSaveChanges} className="mt-6">
           <div className="mb-4">
             <label className="block mb-2 text-lg font-medium text-gray-700">
               First Name
@@ -74,6 +74,7 @@ const ProfilePage = ({ user }) => {
             <input
               type="text"
               defaultValue={firstName}
+              onChange={handleFirstNameChange}
               className="w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -84,6 +85,7 @@ const ProfilePage = ({ user }) => {
             <input
               type="text"
               defaultValue={lastName}
+              onChange={handleLastNameChange}
               className="w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -94,6 +96,7 @@ const ProfilePage = ({ user }) => {
             <input
               type="email"
               defaultValue={email}
+              onChange={handleEmailChange}
               className="w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>

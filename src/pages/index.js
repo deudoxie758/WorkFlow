@@ -117,7 +117,7 @@ export default function Home({ channelData }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-col h-screen">
-        <NavBar />
+        {/* <NavBar /> */}
 
         <div className="flex flex-1">
           <div className="w-1/4 border-r border-gray-400">

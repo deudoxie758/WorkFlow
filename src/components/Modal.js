@@ -11,11 +11,16 @@ import {
   TextField,
 } from "@mui/material";
 import Search from "./Search";
+import { useSession } from "next-auth/react";
 
 export default function NewModal({ openModal, handleClose }) {
   const [hideText, setHideText] = useState(true);
   const [members, setMembers] = useState([]);
   const [ids, setIds] = useState([]);
+  const [getName, setGetName] = useState("");
+  const [desc, setDesc] = useState("");
+  const [getBody, setGetBody] = useState("");
+  const { data: session, status } = useSession();
 
   const style = {
     position: "absolute",
@@ -30,7 +35,24 @@ export default function NewModal({ openModal, handleClose }) {
     p: 4,
     overflow: "scroll",
   };
-  const createNewChannel = () => {};
+  const createNewChannel = (e) => {
+    e.preventDefault();
+    const name = hideText ? members[0].name : getName;
+    const description = desc;
+    const body = getBody;
+    const type = hideText ? "private" : "public";
+    const id = session?.user.id;
+    const user_ids = members.map((member) => member.id);
+    user_ids.unshift(id);
+    const data = {
+      name,
+      description,
+      body,
+      type,
+      user_ids,
+    };
+    console.log(data);
+  };
   const cancelModal = () => {
     setMembers([]);
     handleClose();
@@ -97,20 +119,27 @@ export default function NewModal({ openModal, handleClose }) {
             <Search setValue={setValue} ids={ids} setIds={setIds} />
             <TextField
               label="Channel Name"
-              className={`${hideText ? "invisible" : "visible"} mt-5`}
+              className={`${hideText ? "hidden" : "visible"} mt-5`}
+              onChange={(e) => setGetName(e.target.value)}
+            />
+            <TextField
+              label="Description"
+              className={`${hideText ? "hidden" : "visible"} mt-5`}
+              onChange={(e) => setDesc(e.target.value)}
             />
             <TextField
               label="Message"
               className="mt-5 h-20"
               multiline={true}
               rows={5}
+              onChange={(e) => setGetBody(e.target.value)}
             />
           </FormControl>
           <div className="mt-20 flex justify-between">
             <Button onClick={cancelModal} variant="outlined">
               Cancel
             </Button>
-            <Button className=" bg-sky-700" variant="contained">
+            <Button className=" bg-sky-700" variant="contained" type="submit">
               Create Channel
             </Button>
           </div>

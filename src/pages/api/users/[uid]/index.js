@@ -17,7 +17,7 @@ export default async function handler(req, res) {
             email: true,
             created_at: true,
             updated_at: true,
-            channels: true,
+            userChannels: true,
           },
         });
         res.status(200).json(getUser);
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
             email: true,
             created_at: true,
             updated_at: true,
-            channels: true,
+            userChannels: true,
           },
         });
         res.status(200).json(editUser);

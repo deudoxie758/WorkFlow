@@ -38,7 +38,6 @@ const theme = createTheme();
 export default function SignIn() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [hasErrors, setHasErros] = React.useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -53,7 +52,6 @@ export default function SignIn() {
       callbackUrl: "/",
       // redirect: false,
     });
-    console.log(res);
   };
 
   return (
@@ -104,7 +102,6 @@ export default function SignIn() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <div className={`${!hasErrors ? "invisible" : "visible"}`}></div>
             <Button
               type="submit"
               fullWidth

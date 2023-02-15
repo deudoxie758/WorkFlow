@@ -20,7 +20,7 @@ model User {
   created_at   DateTime
   updated_at   DateTime
   messages     Message[]
-  channels     Channel[]
+  // channels     Channel[]
   userChannels UserChannels[]
   // Channel      Channel?       @relation(fields: [channelId], references: [id])
   // channelId    Int?
@@ -42,7 +42,7 @@ model Channel {
   description  String
   type         String
   messages     Message[]
-  users        User[]
+  // users        User[]
   userChannels UserChannels[]
 }
 

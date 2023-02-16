@@ -2,7 +2,7 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-export default function Search({ setValue, ids, setIds }) {
+export default function Search({ setValue, ids, setIds, users }) {
   const [ids2, setIds2] = React.useState([]);
 
   React.useEffect(() => {
@@ -31,19 +31,19 @@ export default function Search({ setValue, ids, setIds }) {
       options={users}
       sx={{ width: 300 }}
       renderInput={(params) => <TextField {...params} label="People" />}
-      getOptionLabel={(option) => (option ? option.name : "")}
+      getOptionLabel={(option) => (option ? option.username : "")}
       key={(option) => option.id}
       onChange={test}
     />
   );
 }
-const users = [
-  { name: "john", id: 1 },
-  { name: "boon", id: 2 },
-  { name: "jon", id: 3 },
-  { name: "kevin", id: 4 },
-  { name: "tyna", id: 5 },
-  { name: "pauline", id: 6 },
-  { name: "samuel", id: 7 },
-  { name: "ron", id: 8 },
-];
+// const users = [
+//   { name: "john", id: 1 },
+//   { name: "boon", id: 2 },
+//   { name: "jon", id: 3 },
+//   { name: "kevin", id: 4 },
+//   { name: "tyna", id: 5 },
+//   { name: "pauline", id: 6 },
+//   { name: "samuel", id: 7 },
+//   { name: "ron", id: 8 },
+// ];

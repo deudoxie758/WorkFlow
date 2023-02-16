@@ -12,8 +12,15 @@ import {
 } from "@mui/material";
 import Search from "./Search";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
-export default function NewModal({ openModal, handleClose }) {
+export default function NewModal({
+  openModal,
+  handleClose,
+  channels,
+  updateChannels,
+  users,
+}) {
   const [hideText, setHideText] = useState(true);
   const [members, setMembers] = useState([]);
   const [ids, setIds] = useState([]);
@@ -35,7 +42,7 @@ export default function NewModal({ openModal, handleClose }) {
     p: 4,
     overflow: "scroll",
   };
-  const createNewChannel = (e) => {
+  const createNewChannel = async (e) => {
     e.preventDefault();
     const name = hideText ? members[0].name : getName;
     const description = desc;
@@ -51,8 +58,12 @@ export default function NewModal({ openModal, handleClose }) {
       type,
       user_ids,
     };
-    console.log(data);
+    const newChan = await axios.post("/api/channels", data);
+    const getChans = await axios.get(`/api/users/${id}channels`);
+    updateChannels(getChans.data.channels);
+    handleClose();
   };
+
   const cancelModal = () => {
     setMembers([]);
     handleClose();
@@ -116,7 +127,12 @@ export default function NewModal({ openModal, handleClose }) {
                 ))
               )}
             </Box>
-            <Search setValue={setValue} ids={ids} setIds={setIds} />
+            <Search
+              setValue={setValue}
+              ids={ids}
+              setIds={setIds}
+              users={users}
+            />
             <TextField
               label="Channel Name"
               className={`${hideText ? "hidden" : "visible"} mt-5`}

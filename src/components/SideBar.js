@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -15,11 +15,17 @@ import StarBorder from "@mui/icons-material/StarBorder";
 
 import NewModal from "./Modal";
 
-function SideBar({ channels, updateChat }) {
+function SideBar({ channels, updateChat, updateChannels, users }) {
   const [open, setOpen] = useState(true);
   const [open1, setOpen1] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+  const [currentChannels, setCurrentChannels] = useState([]);
 
+  useEffect(() => {
+    // updateChannels(channels);
+    // console.log(channels.channels);
+    setCurrentChannels(channels);
+  }, [channels]);
   const handleClick = () => {
     setOpen(!open);
   };
@@ -34,6 +40,7 @@ function SideBar({ channels, updateChat }) {
   const handleClose = () => {
     setOpenModal(false);
   };
+  console.log(Array.isArray(currentChannels));
 
   if (channels) {
     return (
@@ -51,6 +58,9 @@ function SideBar({ channels, updateChat }) {
           handleModal={handleModal}
           openModal={openModal}
           handleClose={handleClose}
+          channels={channels}
+          updateChannels={updateChannels}
+          users={users}
         />
         <ListItemButton onClick={handleModal}>
           <ListItemIcon>
@@ -67,18 +77,22 @@ function SideBar({ channels, updateChat }) {
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {channels.map((channel) => (
-              <ListItemButton
-                key={channel.id}
-                id={channel.id}
-                onClick={() => updateChat(channel)}
-              >
-                <ListItemIcon>
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText primary={channel.name} />
-              </ListItemButton>
-            ))}
+            {currentChannels?.length ? (
+              currentChannels.map((channel) => (
+                <ListItemButton
+                  key={channel.id}
+                  id={channel.id}
+                  onClick={() => updateChat(channel)}
+                >
+                  <ListItemIcon>
+                    <StarBorder />
+                  </ListItemIcon>
+                  <ListItemText primary={channel.name} />
+                </ListItemButton>
+              ))
+            ) : (
+              <div></div>
+            )}
           </List>
         </Collapse>
         <ListItemButton onClick={handleClick1}>

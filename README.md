@@ -1,38 +1,68 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# WorkFlow
 
-## Getting Started
+## Feel like you're in the office
 
-First, run the development server:
+By Darnell Eudoxie
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Software Architecture
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Technologies Used
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+- React
+- NextJs
+- Prisma
+- WebSockets
+- MySQL
+- Next Auth
+- Socket.Io
+- JavaScript
+- Html
+- Bcrypt
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+### Key Features
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- User Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+  - Bcrypt security hashing functionality for passwords
+  - Auth routes on front end to restrict unauthorized access to user specific site features
+  - Users can edit profile information
 
-## Learn More
+- Create Channels
+  - Users are able to create different channels for individuals.
+  - State of current board saves to local storage so user won't lose progress on a page refresh
+- Direct Messaging
+  - User can direct message any of the users signed up for WorkFlow
+  - Users have access to real time direct messaging.
 
-To learn more about Next.js, take a look at the following resources:
+## Users
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- GET /api/users - Return all users
+- GET /api/users/:id - Return all channels and messages of the user
+- GET /api/users/:id/channels - Return all channels of user at id
+- PUT /api/users/:id - Edit user at id.
+- DELETE /:id - Delete user at id
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Channels
 
-## Deploy on Vercel
+- GET /api/channels - Return all channels
+- GET api/channel/:id - Return a channel with that id
+- POST api/channel - Create new channel and messages
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## App
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- POST /signup - Create new user
+- POST /login - Login user
+- POST /logout - Logout current user
+
+## To run this app:
+
+Clone app and npm install to get the project dependecies
+
+#
+
+Create the following environment variables:
+
+- DATABASE_URL
+- JWT_SECRET
+
+### run "npm run dev" to start the development server

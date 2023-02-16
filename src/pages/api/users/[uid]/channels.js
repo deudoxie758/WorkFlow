@@ -30,6 +30,11 @@ export default async function handler(req, res) {
                 },
               },
             },
+            users: {
+              select: {
+                id: true,
+              },
+            },
           },
         });
         res.status(200).json(channels);

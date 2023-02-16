@@ -5,37 +5,45 @@ export default async function handler(req, res) {
   switch (method) {
     case "POST":
       try {
-        const { name, description, type, body, user_id } = req.body;
+        const { name, description, type, body, user_ids } = req.body;
         const created_at = new Date();
-        const newChannel = await prisma.channel.create({
-          data: {
-            name,
-            description,
-            type,
-          },
-          include: {
-            userChannels: true,
-          },
-        });
-        const channel_id = newChannel.id;
-        await prisma.message.create({
-          data: {
-            channel_id,
-            user_id,
-            body,
-            created_at,
-          },
-        });
-        const getChannel = await prisma.channel.findUnique({
-          where: { id: channel_id },
-          select: {
-            name: true,
-            description: true,
-            type: true,
-            messages: true,
-          },
-        });
-        res.status(200).json(getChannel);
+
+        prisma.channel
+          .create({
+            data: {
+              name,
+              description,
+              type,
+              users: {
+                connect: user_ids.map((user_id) => ({ id: user_id })),
+              },
+              messages: {
+                create: {
+                  body,
+                  created_at,
+                  user: { connect: { id: user_ids[0] } },
+                },
+              },
+            },
+            include: {
+              users: {
+                select: {
+                  id: true,
+                  username: true,
+                  firstname: true,
+                  lastname: true,
+                  email: true,
+                },
+              },
+              messages: true,
+            },
+          })
+          .then((newChannel) => {
+            res.status(200).json(newChannel);
+          })
+          .catch((error) => {
+            res.status(400).json({ error: error });
+          });
       } catch (error) {
         res.status(400).json({ error: error });
       }

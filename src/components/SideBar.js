@@ -21,10 +21,20 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
   const [open1, setOpen1] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [currentChannels, setCurrentChannels] = useState([]);
+  const [publicChannels, setPublicChannels] = useState([]);
+  const [privateChannels, setPrivateChannels] = useState([]);
 
   useEffect(() => {
     // updateChannels(channels);
     setCurrentChannels(channels);
+    const getPubChannels = channels.filter(
+      (channel) => channel.type.toLowerCase() === "public"
+    );
+    const getPrivChannels = channels.filter(
+      (channel) => channel.type.toLowerCase() === "private"
+    );
+    setPrivateChannels(getPrivChannels);
+    setPublicChannels(getPubChannels);
   }, [channels]);
   const handleClick = () => {
     setOpen(!open);
@@ -77,8 +87,8 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {channels?.length ? (
-              channels.map((channel) => (
+            {publicChannels?.length ? (
+              publicChannels.map((channel) => (
                 <ListItemButton
                   key={channel.id}
                   id={channel.id}
@@ -104,12 +114,22 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
         </ListItemButton>
         <Collapse in={open1} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <StarBorder />
-              </ListItemIcon>
-              <ListItemText primary="Starred" />
-            </ListItemButton>
+            {privateChannels?.length ? (
+              privateChannels.map((channel) => (
+                <ListItemButton
+                  key={channel.id}
+                  id={channel.id}
+                  onClick={() => updateChat(channel)}
+                >
+                  <ListItemIcon>
+                    <StarBorder />
+                  </ListItemIcon>
+                  <ListItemText primary={channel.name} />
+                </ListItemButton>
+              ))
+            ) : (
+              <div></div>
+            )}
           </List>
         </Collapse>
         <ListItemButton>

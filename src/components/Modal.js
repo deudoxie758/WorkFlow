@@ -28,6 +28,7 @@ export default function NewModal({
   const [desc, setDesc] = useState("");
   const [getBody, setGetBody] = useState("");
   const { data: session, status } = useSession();
+  const [errors, setErrors] = useState("");
 
   const style = {
     position: "absolute",
@@ -44,12 +45,24 @@ export default function NewModal({
   };
   const createNewChannel = async (e) => {
     e.preventDefault();
+    const user_ids = members.map((member) => member.id);
+    for (let ch of channels) {
+      const channelUsers = ch.users;
+      console.log(channelUsers);
+      if (channelUsers && channelUsers.length === 2 && user_ids.length === 1) {
+        const channelUserIds = ch.users.map((m) => m.id);
+        if (channelUserIds.includes(user_ids[0])) {
+          setErrors("Direct Message Already Exists");
+        }
+      }
+    }
+    console.log(channels);
     const name = hideText ? members[0].name : getName;
     const description = desc;
     const body = getBody;
     const type = hideText ? "private" : "public";
     const id = session?.user.id;
-    const user_ids = members.map((member) => member.id);
+    console.log(id);
     user_ids.unshift(id);
     const data = {
       name,
@@ -61,6 +74,7 @@ export default function NewModal({
     const newChan = await axios.post("/api/channels", data);
     const getChans = await axios.get(`/api/users/${id}channels`);
     updateChannels(getChans.data.channels);
+    setMembers([]);
     handleClose();
   };
 

@@ -14,6 +14,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
 
 import NewModal from "./Modal";
+import SignOut from "./SignOut";
 
 function SideBar({ channels, updateChat, updateChannels, users }) {
   const [open, setOpen] = useState(true);
@@ -23,7 +24,6 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
 
   useEffect(() => {
     // updateChannels(channels);
-    console.log(channels);
     setCurrentChannels(channels);
   }, [channels]);
   const handleClick = () => {
@@ -112,6 +112,9 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
             </ListItemButton>
           </List>
         </Collapse>
+        <ListItemButton>
+          <SignOut />
+        </ListItemButton>
       </List>
     );
   }

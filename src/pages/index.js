@@ -152,7 +152,6 @@ export default function Home({ channelData, users }) {
             )}
           </div>
         </div>
-        <SignOut />
       </main>
     </>
   );

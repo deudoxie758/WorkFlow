@@ -8,23 +8,31 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const channels = await prisma.channel.findMany({
+          where: {
+            users: {
+              some: { id },
+            },
+          },
           include: {
-            messages: true,
+            messages: {
+              select: {
+                id: true,
+                body: true,
+                created_at: true,
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    firstname: true,
+                    lastname: true,
+                    email: true,
+                  },
+                },
+              },
+            },
           },
         });
-        const filtered_channels = [];
-        const ids = new Set();
-        for (let channel of channels) {
-          for (let message of channel.messages) {
-            if (message.user_id === id) {
-              if (!ids.has(channel.id)) {
-                filtered_channels.push(channel);
-                ids.add(channel.id);
-              }
-            }
-          }
-        }
-        res.status(200).json(filtered_channels);
+        res.status(200).json(channels);
       } catch (error) {
         res.status(400).json({ error: error });
       }

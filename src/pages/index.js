@@ -160,10 +160,10 @@ export default function Home({ channelData, users }) {
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
-  const id = session.user ? session.user.id : null;
   let channelData = [];
   let users = [];
   if (session) {
+    const id = session.user ? session.user.id : null;
     const response = await fetch(
       `http://localhost:3000/api/users/${id}/channels`
     );

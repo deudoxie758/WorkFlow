@@ -23,7 +23,7 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
 
   useEffect(() => {
     // updateChannels(channels);
-    // console.log(channels.channels);
+    console.log(channels);
     setCurrentChannels(channels);
   }, [channels]);
   const handleClick = () => {
@@ -77,8 +77,8 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {currentChannels?.length ? (
-              currentChannels.map((channel) => (
+            {channels?.length ? (
+              channels.map((channel) => (
                 <ListItemButton
                   key={channel.id}
                   id={channel.id}

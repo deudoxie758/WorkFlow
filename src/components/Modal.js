@@ -61,6 +61,7 @@ export default function NewModal({
     const newChan = await axios.post("/api/channels", data);
     const getChans = await axios.get(`/api/users/${id}channels`);
     updateChannels(getChans.data.channels);
+    console.log(getChans.data.channels);
     handleClose();
   };
 

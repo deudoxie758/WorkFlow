@@ -38,6 +38,7 @@ export default function Home({ channelData, users }) {
   }, [session, messages]);
 
   function updateChat(chat) {
+    console.log(chat);
     if (chat.messages) {
       setChannel(chat);
       setMessages(chat.messages);
@@ -169,6 +170,7 @@ export async function getServerSideProps(context) {
     channelData = await response.json();
     const userData = await fetch(`http://localhost:3000/api/users`);
     users = await userData.json();
+    // console.log(channelData[0]);
   }
   return {
     props: {

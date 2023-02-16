@@ -103,19 +103,25 @@ export default function Home({ channelData, users }) {
                   {messages.map((message) => (
                     <div
                       key={message.id}
-                      className="flex items-start justify-start space-x-2 mb-4"
+                      className={`flex items-start justify-start space-x-2 mb-4`}
                     >
                       <div className="flex-shrink-0">
-                        <img
+                        {/* <img
                           src={message.avatar}
                           alt={`${message.username}'s avatar`}
                           className="w-8 h-8 rounded-full"
-                        />
+                        /> */}
                       </div>
                       <div className="flex-1">
                         <div className="text-gray-500">{message.username}</div>
-                        <div className="bg-gray-200 px-4 py-2 rounded-md">
-                          <div className="text-gray-800">{message.body}</div>
+                        <div
+                          className={`${
+                            message.user?.id === session?.user?.id
+                              ? "bg-sky-200"
+                              : "bg-gray-200"
+                          } px-4 py-2 rounded-md`}
+                        >
+                          <div className={`text-gray-800`}>{message.body}</div>
                         </div>
                       </div>
                     </div>

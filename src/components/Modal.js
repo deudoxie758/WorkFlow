@@ -57,7 +57,7 @@ export default function NewModal({
       }
     }
     console.log(channels);
-    const name = hideText ? members[0].name : getName;
+    const name = hideText ? members[0].name : `#${getName}`;
     const description = desc;
     const body = getBody;
     const type = hideText ? "private" : "public";

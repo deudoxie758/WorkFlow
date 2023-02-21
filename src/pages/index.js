@@ -98,7 +98,11 @@ export default function Home({ channelData, users }) {
             {channel ? (
               <div className="flex flex-col h-screen">
                 <div className="flex justify-between items-center p-4 border-b border-gray-400">
-                  <div className="text-lg font-medium">{channel.name}</div>
+                  <div className="text-lg font-medium">
+                    {channel.users[0].id === session?.user?.id
+                      ? `${channel.users[1].username}`
+                      : `${channel.users[0].username}`}
+                  </div>
                   <div className="text-gray-500">{channel.description}</div>
                 </div>
                 <div className="flex-1 p-4 overflow-y-scroll">

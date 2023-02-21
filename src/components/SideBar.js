@@ -12,9 +12,9 @@ import SendIcon from "@mui/icons-material/Send";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
-
 import NewModal from "./Modal";
 import SignOut from "./SignOut";
+import { useSession } from "next-auth/react";
 
 function SideBar({ channels, updateChat, updateChannels, users }) {
   const [open, setOpen] = useState(true);
@@ -23,6 +23,7 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
   const [currentChannels, setCurrentChannels] = useState([]);
   const [publicChannels, setPublicChannels] = useState([]);
   const [privateChannels, setPrivateChannels] = useState([]);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     // updateChannels(channels);
@@ -36,6 +37,7 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
     setPrivateChannels(getPrivChannels);
     setPublicChannels(getPubChannels);
   }, [channels]);
+
   const handleClick = () => {
     setOpen(!open);
   };
@@ -124,7 +126,14 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
                   <ListItemIcon>
                     <StarBorder />
                   </ListItemIcon>
-                  <ListItemText primary={channel.name} />
+                  {/* <ListItemText primary={channel.name} /> */}
+                  <ListItemText
+                    primary={
+                      channel.users[0].id === session?.user?.id
+                        ? `${channel.users[1].username}`
+                        : `${channel.users[0].username}`
+                    }
+                  />
                 </ListItemButton>
               ))
             ) : (

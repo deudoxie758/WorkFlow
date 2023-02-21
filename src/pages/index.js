@@ -31,14 +31,15 @@ export default function Home({ channelData, users }) {
       });
 
       socket.on("new-messages", (data) => {
-        setMessages(data);
+        // setMessages(data);
+        setMessages([...data]);
       });
     };
     socketInitializer();
   }, [session, messages]);
 
   function updateChat(chat) {
-    console.log(chat);
+    // console.log(chat);
     if (chat.messages) {
       setChannel(chat);
       setMessages(chat.messages);
@@ -60,6 +61,7 @@ export default function Home({ channelData, users }) {
         };
         socket.emit("new-message", getData);
         e.target.body.value = "";
+        // console.log(messages);
       }
     } catch (error) {
       console.log(error);
@@ -114,6 +116,7 @@ export default function Home({ channelData, users }) {
                       </div>
                       <div className="flex-1">
                         <div className="text-gray-500">{message.username}</div>
+                        <h2>{`${message?.user?.username}`}</h2>
                         <div
                           className={`${
                             message.user?.id === session?.user?.id

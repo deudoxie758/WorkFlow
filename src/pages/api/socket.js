@@ -19,7 +19,30 @@ const SocketHandler = (req, res) => {
         });
         const getChannel = await prisma.channel.findUnique({
           where: { id: data.channel_id },
-          include: { messages: true },
+          // include: { messages: true },
+          include: {
+            messages: {
+              select: {
+                id: true,
+                body: true,
+                created_at: true,
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    firstname: true,
+                    lastname: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+            users: {
+              select: {
+                id: true,
+              },
+            },
+          },
         });
         const getMessages = getChannel.messages;
         socket.broadcast.emit("new-messages", getMessages);

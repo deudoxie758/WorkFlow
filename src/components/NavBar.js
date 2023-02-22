@@ -1,8 +1,21 @@
+import React, { useEffect, useState } from "react";
+import {
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  Switch,
+} from "@mui/material";
+
 export default function NavBar() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark", isDarkMode);
+  }, [isDarkMode]);
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
-        <a href="https://flowbite.com/" className="flex items-center">
+        <a href="/" className="flex items-center">
           <img
             src="https://flowbite.com/docs/images/logo.svg"
             className="h-6 mr-3 sm:h-9"
@@ -109,6 +122,12 @@ export default function NavBar() {
               placeholder="Search..."
             ></input>
           </div>
+          {/* <FormGroup>
+            <FormControlLabel
+              control={<Switch onClick={() => setIsDarkMode(!isDarkMode)} />}
+              label="Dark Mode"
+            />
+          </FormGroup> */}
           <ul className="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li>
               <a

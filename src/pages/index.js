@@ -18,10 +18,13 @@ export default function Home({ channelData, users }) {
   const [channel, setChannel] = useState(channelData[0]);
   const { data: session, status } = useSession();
   const [messages, setMessages] = useState(channelData[0]?.messages || []);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   checkStatus();
 
   useEffect(() => {
+    document.body.classList.toggle("dark", isDarkMode);
     const socketInitializer = async () => {
       await fetch("/api/socket");
       socket = io();
@@ -36,7 +39,7 @@ export default function Home({ channelData, users }) {
       });
     };
     socketInitializer();
-  }, [session, messages]);
+  }, [session, messages, isDarkMode]);
 
   function updateChat(chat) {
     // console.log(chat);
@@ -82,8 +85,14 @@ export default function Home({ channelData, users }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex flex-col h-screen">
-        {/* <NavBar /> */}
+      <main className="flex flex-col h-screen overflow-scroll dark:bg-gray-900 dark:text-white">
+        {/* <NavBar checked={checked} setChecked={setChecked} /> */}
+
+        {/* <label class="toggleDarkBtn">
+          DarkMode
+          <input type="checkbox" onClick={() => setIsDarkMode(!isDarkMode)} />
+          <span class="slideBtnTg round"></span>
+        </label> */}
 
         <div className="flex flex-1">
           <div className="w-1/4 border-r border-gray-400">
@@ -135,7 +144,7 @@ export default function Home({ channelData, users }) {
                   ))}
                 </div>
                 <form onSubmit={onClick} className="flex-none p-4">
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 pb-3">
                     <img
                       src="/user-avatar.png"
                       alt="User avatar"

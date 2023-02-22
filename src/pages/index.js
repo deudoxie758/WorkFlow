@@ -146,7 +146,7 @@ export default function Home({ channelData, users }) {
                 <form onSubmit={onClick} className="flex-none p-4">
                   <div className="flex space-x-2 pb-3">
                     <img
-                      src="/user-avatar.png"
+                      src="/placeholder.jpeg"
                       alt="User avatar"
                       className="w-8 h-8 rounded-full"
                     />

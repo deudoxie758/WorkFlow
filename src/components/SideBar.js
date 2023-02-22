@@ -66,7 +66,7 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
             id="nested-list-subheader"
             className="dark:bg-gray-900 dark:text-white"
           >
-            Dashboard
+            Channels
           </ListSubheader>
         }
         className="dark:bg-gray-900 dark:text-white"

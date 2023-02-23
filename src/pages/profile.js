@@ -4,12 +4,19 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import Image from "next/image";
 
-const ProfilePage = ({ user }) => {
+const ProfilePage = ({ curr_user }) => {
+  const [user, setUser] = useState(curr_user);
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [firstName, setFirstName] = useState(user.firstname);
   const [lastName, setLastName] = useState(user.lastname);
   const [profilePicture, setProfilePicture] = useState(user.profilePicture);
+
+  useEffect(() => {
+    setEmail(user.email);
+    setFirstName(user.firstname);
+    setLastName(user.lastname);
+  }, [user]);
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -31,17 +38,18 @@ const ProfilePage = ({ user }) => {
     setProfilePicture(event.target.value);
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = (e) => {
+    e.preventDefault();
     const updatedUser = {
-      username,
       email,
-      firstname,
-      lastname,
+      firstname: firstName,
+      lastname: lastName,
     };
     axios
       .put(`/api/users/${user.id}`, updatedUser)
       .then((response) => {
         console.log("User updated:", response.data);
+        setUser(response.data);
       })
       .catch((error) => {
         console.error("Error updating user:", error);
@@ -102,7 +110,8 @@ const ProfilePage = ({ user }) => {
           </div>
           <button
             type="submit"
-            className="w-full px-6 py-3 text-lg font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full px-6 py-3 text-lg font-medium text-white bg-gray-500 rounded-md hover:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled={true}
           >
             Save Changes
           </button>
@@ -116,7 +125,7 @@ export default ProfilePage;
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
   const id = session.user ? session.user.id : null;
-  const user = {
+  const curr_user = {
     ...session.user,
     accessToken: session.accessToken || null,
     refreshToken: session.refreshToken || null,
@@ -125,7 +134,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      user,
+      curr_user,
     },
   };
 }

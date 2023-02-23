@@ -28,7 +28,13 @@ export default function NewModal({
   const [desc, setDesc] = useState("");
   const [getBody, setGetBody] = useState("");
   const { data: session, status } = useSession();
-  const [errors, setErrors] = useState("");
+  const [errors, setErrors] = useState({
+    dm: "",
+    missingMessage: "",
+    userLimit: "",
+    noUsers: "",
+    noName: "",
+  });
 
   const style = {
     position: "absolute",
@@ -45,24 +51,76 @@ export default function NewModal({
   };
   const createNewChannel = async (e) => {
     e.preventDefault();
+    if (!members.length) {
+      const newErrors = {
+        ...errors,
+        noUsers: "No user selected",
+      };
+      setErrors(newErrors);
+      return;
+    }
     const user_ids = members.map((member) => member.id);
     for (let ch of channels) {
-      const channelUsers = ch.users;
-      console.log(channelUsers);
-      if (channelUsers && channelUsers.length === 2 && user_ids.length === 1) {
-        const channelUserIds = ch.users.map((m) => m.id);
-        if (channelUserIds.includes(user_ids[0])) {
-          setErrors("Direct Message Already Exists");
+      if (
+        ch.users.length === 2 &&
+        ch.type === "private" &&
+        user_ids.length === 1
+      ) {
+        const channel_ids = ch.users.map((m) => m.id);
+        if (channel_ids.includes(user_ids[0])) {
+          const newErrors = {
+            ...errors,
+            dm: "This direct message already exists",
+          };
+          setErrors(newErrors);
+          return;
+        } else {
+          setErrors({
+            ...errors,
+            dm: "",
+          });
         }
       }
     }
-    console.log(channels);
+
+    const type = hideText ? "private" : "public";
+    if (type === "private" && user_ids.length > 1) {
+      const newErrors = {
+        ...errors,
+        userLimit: "A direct message can't contain more than one user",
+      };
+      setErrors(newErrors);
+      return;
+    } else {
+      setErrors({
+        ...errors,
+        userLimit: "",
+      });
+    }
     const name = hideText ? members[0].name : `#${getName}`;
+    if (!hideText && !getName) {
+      const newErrors = {
+        ...errors,
+        noName: "Please provide a name for this channel",
+      };
+      setErrors(newErrors);
+      return;
+    } else {
+      setErrors({
+        ...errors,
+        noName: "",
+      });
+    }
     const description = desc;
     const body = getBody;
-    const type = hideText ? "private" : "public";
+    if (!body) {
+      setErrors({
+        ...errors,
+        missingMessage: "Message is required to start a new channel",
+      });
+      return;
+    }
     const id = session?.user.id;
-    console.log(id);
     user_ids.unshift(id);
     const data = {
       name,
@@ -72,14 +130,21 @@ export default function NewModal({
       user_ids,
     };
     const newChan = await axios.post("/api/channels", data);
-    const getChans = await axios.get(`/api/users/${id}channels`);
-    updateChannels(getChans.data.channels);
+    const getChans = await axios.get(`/api/users/${id}/channels`);
+    updateChannels(getChans.data);
     setMembers([]);
     handleClose();
   };
 
   const cancelModal = () => {
     setMembers([]);
+    setErrors({
+      dm: "",
+      missingMessage: "",
+      userLimit: "",
+      noUsers: "",
+      noName: "",
+    });
     handleClose();
   };
   const setValue = (obj) => {
@@ -110,7 +175,7 @@ export default function NewModal({
         </Typography>
         <form onSubmit={createNewChannel}>
           <FormControl>
-            <RadioGroup className="pb-5">
+            <RadioGroup className="pb-5" defaultValue="private">
               <FormControlLabel
                 onClick={() => setHideText(true)}
                 value="private"
@@ -146,12 +211,26 @@ export default function NewModal({
               ids={ids}
               setIds={setIds}
               users={users}
+              errors={[errors.dm, errors.userLimit, errors.noUsers]}
             />
+            <Typography color="error">
+              {errors.dm ? `${errors.dm}` : ""}
+            </Typography>
+            <Typography color="error">
+              {errors.userLimit ? `${errors.userLimit}` : ""}
+            </Typography>
+            <Typography color="error">
+              {errors.noUsers ? `${errors.noUsers}` : ""}
+            </Typography>
             <TextField
               label="Channel Name"
               className={`${hideText ? "hidden" : "visible"} mt-5`}
               onChange={(e) => setGetName(e.target.value)}
+              error={errors.noName.length > 0}
             />
+            <Typography color="error">
+              {errors.noName ? errors.noName : ""}
+            </Typography>
             <TextField
               label="Description"
               className={`${hideText ? "hidden" : "visible"} mt-5`}
@@ -164,6 +243,9 @@ export default function NewModal({
               rows={5}
               onChange={(e) => setGetBody(e.target.value)}
             />
+            <Typography color="error" className="mt-20">
+              {errors.missingMessage ? errors.missingMessage : ""}
+            </Typography>
           </FormControl>
           <div className="mt-20 flex justify-between">
             <Button onClick={cancelModal} variant="outlined">

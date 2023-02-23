@@ -1,8 +1,21 @@
+import React, { useEffect, useState } from "react";
+import {
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  Switch,
+} from "@mui/material";
+
 export default function NavBar() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark", isDarkMode);
+  }, [isDarkMode]);
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
-        <a href="https://flowbite.com/" className="flex items-center">
+        <a href="/" className="flex items-center">
           <img
             src="https://flowbite.com/docs/images/logo.svg"
             className="h-6 mr-3 sm:h-9"
@@ -35,7 +48,7 @@ export default function NavBar() {
             </svg>
             <span className="sr-only">Search</span>
           </button>
-          <div className="relative hidden md:block">
+          {/* <div className="relative hidden md:block">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
                 className="w-5 h-5 text-gray-500"
@@ -58,7 +71,7 @@ export default function NavBar() {
               className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Search..."
             ></input>
-          </div>
+          </div> */}
           <button
             data-collapse-toggle="navbar-search"
             type="button"
@@ -109,6 +122,12 @@ export default function NavBar() {
               placeholder="Search..."
             ></input>
           </div>
+          {/* <FormGroup>
+            <FormControlLabel
+              control={<Switch onClick={() => setIsDarkMode(!isDarkMode)} />}
+              label="Dark Mode"
+            />
+          </FormGroup> */}
           <ul className="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li>
               <a

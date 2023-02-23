@@ -54,6 +54,17 @@ export default function SignIn() {
     });
   };
 
+  const demoSignIn = async (e) => {
+    e.preventDefault();
+
+    const res = await signIn("credentials", {
+      email: "jane@doe.com",
+      password: "password",
+      callbackUrl: "/",
+      // redirect: false,
+    });
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -110,6 +121,15 @@ export default function SignIn() {
               className="text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
               Sign In
+            </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              className="text-white bg-blue-500 rounded-md hover:bg-blue-600"
+              onClick={demoSignIn}
+            >
+              Demo User Sign In
             </Button>
             <Grid container>
               <Grid item xs>

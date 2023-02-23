@@ -18,10 +18,13 @@ export default function Home({ channelData, users }) {
   const [channel, setChannel] = useState(channelData[0]);
   const { data: session, status } = useSession();
   const [messages, setMessages] = useState(channelData[0]?.messages || []);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   checkStatus();
 
   useEffect(() => {
+    document.body.classList.toggle("dark", isDarkMode);
     const socketInitializer = async () => {
       await fetch("/api/socket");
       socket = io();
@@ -31,21 +34,23 @@ export default function Home({ channelData, users }) {
       });
 
       socket.on("new-messages", (data) => {
-        setMessages(data);
+        // setMessages(data);
+        setMessages([...data]);
       });
     };
     socketInitializer();
-  }, [session, messages]);
+  }, [session, messages, isDarkMode, channelData]);
 
   function updateChat(chat) {
-    console.log(chat);
+    // console.log(chat);
     if (chat.messages) {
       setChannel(chat);
       setMessages(chat.messages);
     }
   }
   function updateChannels(newChannels) {
-    setChannels(newChannels);
+    console.log(newChannels);
+    setChannels(() => [...newChannels]);
   }
   async function onClick(e) {
     try {
@@ -60,6 +65,7 @@ export default function Home({ channelData, users }) {
         };
         socket.emit("new-message", getData);
         e.target.body.value = "";
+        // console.log(messages);
       }
     } catch (error) {
       console.log(error);
@@ -80,8 +86,14 @@ export default function Home({ channelData, users }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex flex-col h-screen">
-        {/* <NavBar /> */}
+      <main className="flex flex-col h-screen overflow-scroll dark:bg-gray-900 dark:text-white">
+        {/* <NavBar checked={checked} setChecked={setChecked} /> */}
+
+        {/* <label class="toggleDarkBtn">
+          DarkMode
+          <input type="checkbox" onClick={() => setIsDarkMode(!isDarkMode)} />
+          <span class="slideBtnTg round"></span>
+        </label> */}
 
         <div className="flex flex-1">
           <div className="w-1/4 border-r border-gray-400">
@@ -96,7 +108,11 @@ export default function Home({ channelData, users }) {
             {channel ? (
               <div className="flex flex-col h-screen">
                 <div className="flex justify-between items-center p-4 border-b border-gray-400">
-                  <div className="text-lg font-medium">{channel.name}</div>
+                  <div className="text-lg font-medium">
+                    {channel.users[0].id === session?.user?.id
+                      ? `${channel.users[1].username}`
+                      : `${channel.users[0].username}`}
+                  </div>
                   <div className="text-gray-500">{channel.description}</div>
                 </div>
                 <div className="flex-1 p-4 overflow-y-scroll">
@@ -114,6 +130,7 @@ export default function Home({ channelData, users }) {
                       </div>
                       <div className="flex-1">
                         <div className="text-gray-500">{message.username}</div>
+                        <h2>{`${message?.user?.username}`}</h2>
                         <div
                           className={`${
                             message.user?.id === session?.user?.id
@@ -128,9 +145,9 @@ export default function Home({ channelData, users }) {
                   ))}
                 </div>
                 <form onSubmit={onClick} className="flex-none p-4">
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 pb-3">
                     <img
-                      src="/user-avatar.png"
+                      src="/placeholder.jpeg"
                       alt="User avatar"
                       className="w-8 h-8 rounded-full"
                     />

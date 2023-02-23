@@ -2,13 +2,12 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-export default function Search({ setValue, ids, setIds, users }) {
+export default function Search({ setValue, ids, setIds, users, errors }) {
   const [ids2, setIds2] = React.useState([]);
 
   React.useEffect(() => {
     setIds2(ids);
-    // console.log(ids);
-  }, [ids]);
+  }, [ids, errors]);
 
   const test = (e, selectedOption) => {
     const name = e.target.innerHTML;
@@ -30,7 +29,17 @@ export default function Search({ setValue, ids, setIds, users }) {
       id="combo-box-demo"
       options={users}
       sx={{ width: 300 }}
-      renderInput={(params) => <TextField {...params} label="People" />}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="People"
+          error={
+            errors[0]?.length > 0 ||
+            errors[1]?.length > 0 ||
+            errors[2]?.length > 0
+          }
+        />
+      )}
       getOptionLabel={(option) => (option ? option.username : "")}
       key={(option) => option.id}
       onChange={test}

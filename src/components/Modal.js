@@ -33,6 +33,7 @@ export default function NewModal({
     missingMessage: "",
     userLimit: "",
     noUsers: "",
+    noName: "",
   });
 
   const style = {
@@ -59,16 +60,6 @@ export default function NewModal({
       return;
     }
     const user_ids = members.map((member) => member.id);
-    // for (let ch of channels) {
-    //   const channelUsers = ch.users;
-    //   if (channelUsers && channelUsers.length === 2 && user_ids.length === 1) {
-    //     const channelUserIds = ch.users.map((m) => m.id);
-    //     if (channelUserIds.includes(user_ids[0])) {
-    //       setErrors("Direct Message Already Exists");
-    //       console.log("exists");
-    //     }
-    //   }
-    // }
     for (let ch of channels) {
       if (
         ch.users.length === 2 &&
@@ -91,9 +82,7 @@ export default function NewModal({
         }
       }
     }
-    const name = hideText ? members[0].name : `#${getName}`;
-    const description = desc;
-    const body = getBody;
+
     const type = hideText ? "private" : "public";
     if (type === "private" && user_ids.length > 1) {
       const newErrors = {
@@ -107,6 +96,29 @@ export default function NewModal({
         ...errors,
         userLimit: "",
       });
+    }
+    const name = hideText ? members[0].name : `#${getName}`;
+    if (!hideText && !getName) {
+      const newErrors = {
+        ...errors,
+        noName: "Please provide a name for this channel",
+      };
+      setErrors(newErrors);
+      return;
+    } else {
+      setErrors({
+        ...errors,
+        noName: "",
+      });
+    }
+    const description = desc;
+    const body = getBody;
+    if (!body) {
+      setErrors({
+        ...errors,
+        missingMessage: "Message is required to start a new channel",
+      });
+      return;
     }
     const id = session?.user.id;
     user_ids.unshift(id);
@@ -207,7 +219,11 @@ export default function NewModal({
               label="Channel Name"
               className={`${hideText ? "hidden" : "visible"} mt-5`}
               onChange={(e) => setGetName(e.target.value)}
+              error={errors.noName.length > 0}
             />
+            <Typography color="error">
+              {errors.noName ? errors.noName : ""}
+            </Typography>
             <TextField
               label="Description"
               className={`${hideText ? "hidden" : "visible"} mt-5`}
@@ -220,6 +236,9 @@ export default function NewModal({
               rows={5}
               onChange={(e) => setGetBody(e.target.value)}
             />
+            <Typography color="error" className="mt-20">
+              {errors.missingMessage ? errors.missingMessage : ""}
+            </Typography>
           </FormControl>
           <div className="mt-20 flex justify-between">
             <Button onClick={cancelModal} variant="outlined">

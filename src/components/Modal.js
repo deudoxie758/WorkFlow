@@ -56,13 +56,11 @@ export default function NewModal({
         }
       }
     }
-    console.log(channels);
     const name = hideText ? members[0].name : `#${getName}`;
     const description = desc;
     const body = getBody;
     const type = hideText ? "private" : "public";
     const id = session?.user.id;
-    console.log(id);
     user_ids.unshift(id);
     const data = {
       name,
@@ -110,7 +108,7 @@ export default function NewModal({
         </Typography>
         <form onSubmit={createNewChannel}>
           <FormControl>
-            <RadioGroup className="pb-5">
+            <RadioGroup className="pb-5" required>
               <FormControlLabel
                 onClick={() => setHideText(true)}
                 value="private"

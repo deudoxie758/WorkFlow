@@ -28,7 +28,10 @@ export default function NewModal({
   const [desc, setDesc] = useState("");
   const [getBody, setGetBody] = useState("");
   const { data: session, status } = useSession();
-  const [errors, setErrors] = useState("");
+  const [errors, setErrors] = useState({
+    dm: "",
+    message: "",
+  });
 
   const style = {
     position: "absolute",
@@ -46,13 +49,28 @@ export default function NewModal({
   const createNewChannel = async (e) => {
     e.preventDefault();
     const user_ids = members.map((member) => member.id);
+    // for (let ch of channels) {
+    //   const channelUsers = ch.users;
+    //   if (channelUsers && channelUsers.length === 2 && user_ids.length === 1) {
+    //     const channelUserIds = ch.users.map((m) => m.id);
+    //     if (channelUserIds.includes(user_ids[0])) {
+    //       setErrors("Direct Message Already Exists");
+    //       console.log("exists");
+    //     }
+    //   }
+    // }
     for (let ch of channels) {
-      const channelUsers = ch.users;
-      console.log(channelUsers);
-      if (channelUsers && channelUsers.length === 2 && user_ids.length === 1) {
-        const channelUserIds = ch.users.map((m) => m.id);
-        if (channelUserIds.includes(user_ids[0])) {
-          setErrors("Direct Message Already Exists");
+      if (ch.users.length === 2 && ch.type === "private") {
+        const channel_ids = ch.users.map((m) => m.id);
+        if (channel_ids.includes(user_ids[0])) {
+          const newErrors = {
+            ...errors,
+            dm: "This direct message already exists",
+          };
+          setErrors(newErrors);
+          return;
+        } else {
+          setErrors("");
         }
       }
     }
@@ -69,11 +87,11 @@ export default function NewModal({
       type,
       user_ids,
     };
-    const newChan = await axios.post("/api/channels", data);
-    const getChans = await axios.get(`/api/users/${id}channels`);
-    updateChannels(getChans.data.channels);
-    setMembers([]);
-    handleClose();
+    // const newChan = await axios.post("/api/channels", data);
+    // const getChans = await axios.get(`/api/users/${id}channels`);
+    // updateChannels(getChans.data.channels);
+    // setMembers([]);
+    // handleClose();
   };
 
   const cancelModal = () => {
@@ -144,7 +162,9 @@ export default function NewModal({
               ids={ids}
               setIds={setIds}
               users={users}
+              errors={errors.dm}
             />
+            <Typography>{errors.dm ? `${errors.dm}` : ""}</Typography>
             <TextField
               label="Channel Name"
               className={`${hideText ? "hidden" : "visible"} mt-5`}

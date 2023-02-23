@@ -52,7 +52,6 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
   const handleClose = () => {
     setOpenModal(false);
   };
-  console.log(Array.isArray(currentChannels));
 
   if (channels) {
     return (

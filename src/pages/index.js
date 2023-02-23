@@ -187,10 +187,12 @@ export async function getServerSideProps(context) {
   if (session) {
     const id = session.user ? session.user.id : null;
     const response = await fetch(
-      `http://localhost:3000/api/users/${id}/channels`
+      `https://workflow-demo-app.herokuapp.com/api/users/${id}/channels`
     );
     channelData = await response.json();
-    const userData = await fetch(`http://localhost:3000/api/users`);
+    const userData = await fetch(
+      `https://workflow-demo-app.herokuapp.com/api/users`
+    );
     users = await userData.json();
     // console.log(channelData[0]);
   }

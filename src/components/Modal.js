@@ -138,6 +138,13 @@ export default function NewModal({
 
   const cancelModal = () => {
     setMembers([]);
+    setErrors({
+      dm: "",
+      missingMessage: "",
+      userLimit: "",
+      noUsers: "",
+      noName: "",
+    });
     handleClose();
   };
   const setValue = (obj) => {

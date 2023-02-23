@@ -15,6 +15,7 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import NewModal from "./Modal";
 import SignOut from "./SignOut";
 import { useSession } from "next-auth/react";
+import { ArrowCircleLeft } from "@mui/icons-material";
 
 function SideBar({ channels, updateChat, updateChannels, users }) {
   const [open, setOpen] = useState(true);
@@ -56,100 +57,105 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
 
   if (channels) {
     return (
-      <List
-        sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
-        component="nav"
-        aria-labelledby="nested-list-subheader"
-        subheader={
-          <ListSubheader
-            component="div"
-            id="nested-list-subheader"
-            className="dark:bg-gray-900 dark:text-white"
-          >
-            Channels
-          </ListSubheader>
-        }
-        className="dark:bg-gray-900 dark:text-white"
-      >
-        <NewModal
-          handleModal={handleModal}
-          openModal={openModal}
-          handleClose={handleClose}
-          channels={channels}
-          updateChannels={updateChannels}
-          users={users}
-        />
-        <ListItemButton onClick={handleModal}>
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary="New Channel" />
-        </ListItemButton>
-        <ListItemButton onClick={handleClick}>
-          <ListItemIcon>
-            <SendIcon />
-          </ListItemIcon>
-          <ListItemText primary="Channels" />
-          {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {publicChannels?.length ? (
-              publicChannels.map((channel) => (
-                <ListItemButton
-                  key={channel.id}
-                  id={channel.id}
-                  onClick={() => updateChat(channel)}
-                >
-                  <ListItemIcon>
-                    <StarBorder />
-                  </ListItemIcon>
-                  <ListItemText primary={channel.name} />
-                </ListItemButton>
-              ))
-            ) : (
-              <div></div>
-            )}
-          </List>
-        </Collapse>
-        <ListItemButton onClick={handleClick1}>
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="Inbox" />
-          {open1 ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={open1} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {privateChannels?.length && privateChannels ? (
-              privateChannels.map((channel) => (
-                <ListItemButton
-                  key={channel.id}
-                  id={channel.id}
-                  onClick={() => updateChat(channel)}
-                >
-                  <ListItemIcon>
-                    <StarBorder />
-                  </ListItemIcon>
-                  {/* <ListItemText primary={channel.name} /> */}
-                  <ListItemText
-                    primary={
-                      channel.users[0].id === session?.user?.id
-                        ? `${channel.users[1].username}`
-                        : `${channel.users[0].username}`
-                    }
-                  />
-                </ListItemButton>
-              ))
-            ) : (
-              <div></div>
-            )}
-          </List>
-        </Collapse>
-        <ListItemButton>
-          <SignOut />
-        </ListItemButton>
-      </List>
+      <>
+        <List
+          sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          subheader={
+            <ListSubheader
+              component="div"
+              id="nested-list-subheader"
+              className="dark:bg-gray-900 dark:text-white"
+            >
+              Channels
+            </ListSubheader>
+          }
+          className="dark:bg-gray-900 dark:text-white"
+        >
+          <NewModal
+            handleModal={handleModal}
+            openModal={openModal}
+            handleClose={handleClose}
+            channels={channels}
+            updateChannels={updateChannels}
+            users={users}
+          />
+          <ListItemButton onClick={handleModal}>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary="New Channel" />
+          </ListItemButton>
+          <ListItemButton onClick={handleClick}>
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Channels" />
+            {open ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {publicChannels?.length ? (
+                publicChannels.map((channel) => (
+                  <ListItemButton
+                    key={channel.id}
+                    id={channel.id}
+                    onClick={() => updateChat(channel)}
+                  >
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary={channel.name} />
+                  </ListItemButton>
+                ))
+              ) : (
+                <div></div>
+              )}
+            </List>
+          </Collapse>
+          <ListItemButton onClick={handleClick1}>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Inbox" />
+            {open1 ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={open1} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {privateChannels?.length && privateChannels ? (
+                privateChannels.map((channel) => (
+                  <ListItemButton
+                    key={channel.id}
+                    id={channel.id}
+                    onClick={() => updateChat(channel)}
+                  >
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    {/* <ListItemText primary={channel.name} /> */}
+                    <ListItemText
+                      primary={
+                        channel.users[0].id === session?.user?.id
+                          ? `${channel.users[1].username}`
+                          : `${channel.users[0].username}`
+                      }
+                    />
+                  </ListItemButton>
+                ))
+              ) : (
+                <div></div>
+              )}
+            </List>
+          </Collapse>
+          <ListItemButton>
+            <ListItemIcon>
+              <ArrowCircleLeft />
+            </ListItemIcon>
+            <SignOut />
+          </ListItemButton>
+        </List>
+      </>
     );
   }
 }

@@ -60,7 +60,11 @@ export default function NewModal({
     //   }
     // }
     for (let ch of channels) {
-      if (ch.users.length === 2 && ch.type === "private") {
+      if (
+        ch.users.length === 2 &&
+        ch.type === "private" &&
+        user_ids.length === 1
+      ) {
         const channel_ids = ch.users.map((m) => m.id);
         if (channel_ids.includes(user_ids[0])) {
           const newErrors = {
@@ -87,11 +91,11 @@ export default function NewModal({
       type,
       user_ids,
     };
-    // const newChan = await axios.post("/api/channels", data);
-    // const getChans = await axios.get(`/api/users/${id}channels`);
-    // updateChannels(getChans.data.channels);
-    // setMembers([]);
-    // handleClose();
+    const newChan = await axios.post("/api/channels", data);
+    const getChans = await axios.get(`/api/users/${id}/channels`);
+    updateChannels(getChans.data);
+    setMembers([]);
+    handleClose();
   };
 
   const cancelModal = () => {

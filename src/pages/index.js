@@ -39,7 +39,7 @@ export default function Home({ channelData, users }) {
       });
     };
     socketInitializer();
-  }, [session, messages, isDarkMode]);
+  }, [session, messages, isDarkMode, channelData]);
 
   function updateChat(chat) {
     // console.log(chat);
@@ -49,7 +49,8 @@ export default function Home({ channelData, users }) {
     }
   }
   function updateChannels(newChannels) {
-    setChannels(newChannels);
+    console.log(newChannels);
+    setChannels(() => [...newChannels]);
   }
   async function onClick(e) {
     try {

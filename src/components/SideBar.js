@@ -34,7 +34,7 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
     const getPrivChannels = channels.filter(
       (channel) => channel.type.toLowerCase() === "private"
     );
-    setPrivateChannels(getPrivChannels);
+    setPrivateChannels(() => [...getPrivChannels]);
     setPublicChannels(getPubChannels);
   }, [channels]);
 
@@ -52,6 +52,7 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
   const handleClose = () => {
     setOpenModal(false);
   };
+  console.log(Array.isArray(currentChannels));
 
   if (channels) {
     return (
@@ -120,7 +121,7 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
         </ListItemButton>
         <Collapse in={open1} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {privateChannels?.length ? (
+            {privateChannels?.length && privateChannels ? (
               privateChannels.map((channel) => (
                 <ListItemButton
                   key={channel.id}

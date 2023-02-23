@@ -33,7 +33,11 @@ export default function Search({ setValue, ids, setIds, users, errors }) {
         <TextField
           {...params}
           label="People"
-          error={errors[0]?.length > 0 || errors[1]?.length > 0}
+          error={
+            errors[0]?.length > 0 ||
+            errors[1]?.length > 0 ||
+            errors[2]?.length > 0
+          }
         />
       )}
       getOptionLabel={(option) => (option ? option.username : "")}

@@ -32,6 +32,7 @@ export default function NewModal({
     dm: "",
     missingMessage: "",
     userLimit: "",
+    noUsers: "",
   });
 
   const style = {
@@ -49,6 +50,14 @@ export default function NewModal({
   };
   const createNewChannel = async (e) => {
     e.preventDefault();
+    if (!members.length) {
+      const newErrors = {
+        ...errors,
+        noUsers: "No user selected",
+      };
+      setErrors(newErrors);
+      return;
+    }
     const user_ids = members.map((member) => member.id);
     // for (let ch of channels) {
     //   const channelUsers = ch.users;
@@ -147,7 +156,7 @@ export default function NewModal({
         </Typography>
         <form onSubmit={createNewChannel}>
           <FormControl>
-            <RadioGroup className="pb-5" required>
+            <RadioGroup className="pb-5" defaultValue="private">
               <FormControlLabel
                 onClick={() => setHideText(true)}
                 value="private"
@@ -183,11 +192,16 @@ export default function NewModal({
               ids={ids}
               setIds={setIds}
               users={users}
-              errors={[errors.dm, errors.userLimit]}
+              errors={[errors.dm, errors.userLimit, errors.noUsers]}
             />
-            <Typography>{errors.dm ? `${errors.dm}` : ""}</Typography>
-            <Typography>
+            <Typography color="error">
+              {errors.dm ? `${errors.dm}` : ""}
+            </Typography>
+            <Typography color="error">
               {errors.userLimit ? `${errors.userLimit}` : ""}
+            </Typography>
+            <Typography color="error">
+              {errors.noUsers ? `${errors.noUsers}` : ""}
             </Typography>
             <TextField
               label="Channel Name"

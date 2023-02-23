@@ -15,7 +15,7 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import NewModal from "./Modal";
 import SignOut from "./SignOut";
 import { useSession } from "next-auth/react";
-import { ArrowCircleLeft } from "@mui/icons-material";
+import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 
 function SideBar({ channels, updateChat, updateChannels, users }) {
   const [open, setOpen] = useState(true);
@@ -150,7 +150,7 @@ function SideBar({ channels, updateChat, updateChannels, users }) {
           </Collapse>
           <ListItemButton>
             <ListItemIcon>
-              <ArrowCircleLeft />
+              <ArrowCircleLeftIcon />
             </ListItemIcon>
             <SignOut />
           </ListItemButton>

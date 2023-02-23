@@ -23,7 +23,7 @@ export const authOptions = {
         const path =
           process.env.NODE_ENV === "development"
             ? "http://localhost:3000"
-            : "other";
+            : "https://workflow-demo-app.herokuapp.com/";
         const res = await fetch(`${path}/api/users/validate`, {
           method: "POST",
           body: JSON.stringify(payload),

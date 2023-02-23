@@ -30,7 +30,8 @@ export default function NewModal({
   const { data: session, status } = useSession();
   const [errors, setErrors] = useState({
     dm: "",
-    message: "",
+    missingMessage: "",
+    userLimit: "",
   });
 
   const style = {
@@ -74,7 +75,10 @@ export default function NewModal({
           setErrors(newErrors);
           return;
         } else {
-          setErrors("");
+          setErrors({
+            ...errors,
+            dm: "",
+          });
         }
       }
     }
@@ -82,6 +86,19 @@ export default function NewModal({
     const description = desc;
     const body = getBody;
     const type = hideText ? "private" : "public";
+    if (type === "private" && user_ids.length > 1) {
+      const newErrors = {
+        ...errors,
+        userLimit: "A direct message can't contain more than one user",
+      };
+      setErrors(newErrors);
+      return;
+    } else {
+      setErrors({
+        ...errors,
+        userLimit: "",
+      });
+    }
     const id = session?.user.id;
     user_ids.unshift(id);
     const data = {
@@ -166,9 +183,12 @@ export default function NewModal({
               ids={ids}
               setIds={setIds}
               users={users}
-              errors={errors.dm}
+              errors={[errors.dm, errors.userLimit]}
             />
             <Typography>{errors.dm ? `${errors.dm}` : ""}</Typography>
+            <Typography>
+              {errors.userLimit ? `${errors.userLimit}` : ""}
+            </Typography>
             <TextField
               label="Channel Name"
               className={`${hideText ? "hidden" : "visible"} mt-5`}

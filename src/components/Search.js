@@ -30,7 +30,11 @@ export default function Search({ setValue, ids, setIds, users, errors }) {
       options={users}
       sx={{ width: 300 }}
       renderInput={(params) => (
-        <TextField {...params} label="People" error={errors?.length > 0} />
+        <TextField
+          {...params}
+          label="People"
+          error={errors[0]?.length > 0 || errors[1]?.length > 0}
+        />
       )}
       getOptionLabel={(option) => (option ? option.username : "")}
       key={(option) => option.id}

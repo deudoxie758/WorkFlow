@@ -22,6 +22,7 @@ export default function Home({ channelData, users }) {
   const [checked, setChecked] = useState(false);
 
   checkStatus();
+  console.log(channelData);
 
   useEffect(() => {
     document.body.classList.toggle("dark", isDarkMode);
@@ -71,13 +72,13 @@ export default function Home({ channelData, users }) {
       console.log(error);
     }
   }
-  // if (!channel) {
-  //   return (
-  //     <div>
-  //       <button>Create First Channel</button>
-  //     </div>
-  //   );
-  // }
+  if (!channel) {
+    return (
+      <div>
+        <button>Create First Channel</button>
+      </div>
+    );
+  }
   return (
     <>
       <Head>
@@ -187,14 +188,11 @@ export async function getServerSideProps(context) {
   if (session) {
     const id = session.user ? session.user.id : null;
     const response = await fetch(
-      `https://workflow-demo-app.herokuapp.com/api/users/${id}/channels`
+      `${process.env.NEXTAUTH_URL}/api/users/${id}/channels`
     );
     channelData = await response.json();
-    const userData = await fetch(
-      `https://workflow-demo-app.herokuapp.com/api/users`
-    );
+    const userData = await fetch(`${process.env.NEXTAUTH_URL}/api/users`);
     users = await userData.json();
-    // console.log(channelData[0]);
   }
   return {
     props: {

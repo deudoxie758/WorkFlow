@@ -14,6 +14,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import checkStatus from "@/utils/checkStatus";
 
 function Copyright(props) {
   return (
@@ -38,6 +39,14 @@ const theme = createTheme();
 export default function SignIn() {
   const { data: session, status } = useSession();
   const router = useRouter();
+
+  React.useEffect(() => {
+    if (status !== "loading") {
+      if (session) {
+        router.push("/");
+      }
+    }
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();

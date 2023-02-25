@@ -22,7 +22,6 @@ export default function Home({ channelData, users }) {
   const [checked, setChecked] = useState(false);
 
   checkStatus();
-  console.log(channelData);
 
   useEffect(() => {
     document.body.classList.toggle("dark", isDarkMode);

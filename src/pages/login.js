@@ -74,6 +74,17 @@ export default function SignIn() {
     });
   };
 
+  const demo2SignIn = async (e) => {
+    e.preventDefault();
+
+    const res = await signIn("credentials", {
+      email: "john@doe.com",
+      password: "password",
+      callbackUrl: "/",
+      // redirect: false,
+    });
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -131,6 +142,12 @@ export default function SignIn() {
             >
               Sign In
             </Button>
+            <Typography color="grey">
+              {" "}
+              Sign in using Demo 1 to test out the app. To see the instant
+              messaging feature in real time, sign in using demo 2 on a
+              different browser.
+            </Typography>
             <Button
               fullWidth
               variant="contained"
@@ -139,6 +156,15 @@ export default function SignIn() {
               onClick={demoSignIn}
             >
               Demo User Sign In
+            </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              className="text-white bg-blue-500 rounded-md hover:bg-blue-600"
+              onClick={demo2SignIn}
+            >
+              Demo User 2 Sign In
             </Button>
             <Grid container>
               <Grid item xs>

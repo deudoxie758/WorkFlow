@@ -3,6 +3,9 @@ import axios from "axios";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import Image from "next/image";
+import checkStatus from "@/utils/checkStatus";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 const ProfilePage = ({ curr_user }) => {
   const [user, setUser] = useState(curr_user);
@@ -12,6 +15,14 @@ const ProfilePage = ({ curr_user }) => {
   const [lastName, setLastName] = useState(user.lastname);
   const [profilePicture, setProfilePicture] = useState(user.profilePicture);
 
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  if (status !== "loading") {
+    if (!session) {
+      router.push("/login");
+    }
+  }
   useEffect(() => {
     setEmail(user.email);
     setFirstName(user.firstname);
@@ -124,13 +135,16 @@ export default ProfilePage;
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
-  const id = session.user ? session.user.id : null;
-  const curr_user = {
-    ...session.user,
-    accessToken: session.accessToken || null,
-    refreshToken: session.refreshToken || null,
-    accessTokenExpires: session.accessTokenExpires || null,
-  };
+  let curr_user = {};
+  if (session) {
+    const id = session.user ? session.user.id : null;
+    curr_user = {
+      ...session.user,
+      accessToken: session.accessToken || null,
+      refreshToken: session.refreshToken || null,
+      accessTokenExpires: session.accessTokenExpires || null,
+    };
+  }
 
   return {
     props: {

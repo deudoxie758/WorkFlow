@@ -71,13 +71,13 @@ export default function Home({ channelData, users }) {
       console.log(error);
     }
   }
-  if (!channel) {
-    return (
-      <div>
-        <button>Create First Channel</button>
-      </div>
-    );
-  }
+  // if (!channel) {
+  //   return (
+  //     <div>
+  //       <button>Create First Channel</button>
+  //     </div>
+  //   );
+  // }
   return (
     <>
       <Head>
